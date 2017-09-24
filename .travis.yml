@@ -2,7 +2,7 @@ language: python
 install: true
 sudo: false
 script:
-    - tar -czp --exclude-vcs --file - . | ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ansible@46.101.218.33 'test -f /home/ansible/.sr_lock || ( mkdir -p /home/ansible/srwork; cd /home/ansible/srwork; tar xzpf - ; ./run.sh )'
+    - bash run.sh
 before_install:
     - openssl aes-256-cbc -K $encrypted_2c430460807a_key -iv $encrypted_2c430460807a_iv 
       -in srcluster.enc -out /tmp/travis_key -d
