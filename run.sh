@@ -1,14 +1,18 @@
 #!/bin/bash
 
 LOCK_FILE='/home/ansible/.sr_lock'
+SSH_STR='ansible@46.101.218.33'
+SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_STR}"
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-if test -f "${LOCK_FILE}"
+if $SSH_CMD "test -f ${LOCK_FILE}"
 then
     echo "Error: lock file exists"
     exit 1
 fi
+
+echo 0
 
 touch "${LOCK_FILE}"
 
