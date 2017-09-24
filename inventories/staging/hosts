@@ -1,30 +1,30 @@
 [zookeeper]
-sr-1
-sr-2
-sr-3
+sr-test-1
+sr-test-2
+sr-test-3
 
 [journalnodes]
-sr-1
-sr-2
-sr-3
+sr-test-1
+sr-test-2
+sr-test-3
 
 [namenodes]
-sr-1
-sr-2
+sr-test-1
+sr-test-2
 
 [datanodes]
-sr-4
-sr-5
-sr-6
+sr-test-4
+sr-test-5
+sr-test-6
 
 [resourcemanagers]
-sr-2
-sr-3
+sr-test-2
+sr-test-3
 
 [spark]
-sr-1
-sr-2
-sr-3
-sr-4
-sr-5
-sr-6
+sr-test-1
+sr-test-2
+sr-test-3
+sr-test-4
+sr-test-5
+sr-test-6
