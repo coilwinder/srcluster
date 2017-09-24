@@ -1,6 +1,7 @@
 #!/bin/bash
 
 LOCK_FILE='/home/ansible/.sr_lock'
+WORK_DIR='/home/ansible/srwork'
 SSH_STR='ansible@46.101.218.33'
 SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_STR}"
 
@@ -12,30 +13,31 @@ then
     exit 1
 fi
 
-exit 0
-
-touch "${LOCK_FILE}"
+$SSH_CMD "touch ${LOCK_FILE}" || exit_error "ERROR can't create lock file"
 
 function exit_error ()
 {
    MSG="$1"
-   ./provisioner.sh inventories/staging/ deleted
+   $SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/ deleted"
    echo "${MSG}"
-   rm "${LOCK_FILE}"
+   $SSH_CMD "rm ${LOCK_FILE}"
    exit 1
 }
 
 trap "exit_error 'ERROR: exit by signal'" ERR SIGINT SIGTERM
 
+$SSH_CMD "mkdir -p ${WORK_DIR}; rm -rf ${WORK_DIR}/*" || exit_error "ERROR can't prepare workdir"
 
-./provisioner.sh inventories/staging/  || exit_error "ERROR on staging.provisioner step"
-ansible-playbook -i inventories/staging site.yaml || exit_error "ERROR on staging.ansible step"
-./provisioner.sh inventories/staging/ deleted
+tar -czp --exclude-vcs --file - . | $SSH_CMD "tar xzp --file - -C ${WORK_DIR}" || exit_error "ERROR can't copy "
 
-./provisioner.sh inventories/production || exit_error "ERROR on production.provisioner step"
-ansible-playbook -i inventories/production site.yaml || exit_error "ERROR on production.ansible step"
+$SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/"  || exit_error "ERROR on staging.provisioner step"
+$SSH_CMD "cd ${WORK_DIR}; ansible-playbook -i inventories/staging site.yaml" || exit_error "ERROR on staging.ansible step"
+$SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/ deleted"
 
-rm "${LOCK_FILE}"
+$SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/production" || exit_error "ERROR on production.provisioner step"
+$SSH_CMD "cd ${WORK_DIR}; ansible-playbook -i inventories/production site.yaml" || exit_error "ERROR on production.ansible step"
+
+$SSH_CMD "rm ${LOCK_FILE}"
 
 
 
