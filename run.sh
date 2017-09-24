@@ -12,7 +12,7 @@ then
     exit 1
 fi
 
-echo 0
+exit 0
 
 touch "${LOCK_FILE}"
 
