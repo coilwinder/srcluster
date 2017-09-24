@@ -7,9 +7,6 @@ SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_S
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-$SSH_CMD "cd /home/ansible/work/semrush/srcluster; env"
-$SSH_CMD "cd /home/ansible/work/semrush/srcluster; ./provisioner.sh inventories/staging/"
-exit 0
 
 if $SSH_CMD "test -f ${LOCK_FILE}"
 then
@@ -33,7 +30,7 @@ trap "exit_error 'ERROR: exit by signal'" ERR SIGINT SIGTERM
 $SSH_CMD "mkdir -p ${WORK_DIR}; rm -rf ${WORK_DIR}/*" || exit_error "ERROR can't prepare workdir"
 
 tar -czp --exclude-vcs --file - . | $SSH_CMD "tar xzp --file - -C ${WORK_DIR}" || exit_error "ERROR can't copy "
-$SSH_CMD "cd ${WORK_DIR}; ls -la"
+$SSH_CMD "cd ${WORK_DIR}; env; ls -la; echo "
 
 $SSH_CMD "cd ${WORK_DIR}; bash -xv ./provisioner.sh inventories/staging/"  || exit_error "ERROR on staging.provisioner step"
 $SSH_CMD "cd ${WORK_DIR}; ansible-playbook -i inventories/staging site.yaml" || exit_error "ERROR on staging.ansible step"
