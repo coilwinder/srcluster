@@ -1,0 +1,21 @@
+---
+
+
+# restart services when configuration changed
+# configuration created and variables defined in 'hadoop' role
+- block:
+  - name: restart hadoop-yarn-resourcemanager if configuration changed
+    service:
+      name: 'hadoop-yarn-resourcemanager'
+      state: 'restarted'
+
+  - name: restart hadoop-mapreduce-historyserver if configuration changed
+    service:
+      name: 'hadoop-mapreduce-historyserver'
+      state: 'restarted'
+    when: ansible_hostname == groups['resourcemanagers'][0]
+  
+  when: hadoop_install_templates_result.changed or hadoop_install_files_result
+
+
+

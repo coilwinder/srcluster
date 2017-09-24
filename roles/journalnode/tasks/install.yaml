@@ -1,0 +1,21 @@
+---
+
+
+- name: install packages
+  apt:
+    name: 'hadoop-hdfs-journalnode' 
+    state: 'present'
+
+- name: create journal node directories
+  file: 
+    dest: '{{ dfs_journalnode_edits_dir }}' 
+    owner: 'hdfs' 
+    group: 'hdfs' 
+    state: 'directory'
+
+- name: start and enable hadoop-hdfs-journalnode
+  service: 
+    name: 'hadoop-hdfs-journalnode' 
+    state: 'started' 
+    enabled: True
+

@@ -1,0 +1,68 @@
+---
+
+
+- name: install namenode package
+  apt:  
+    name: 'hadoop-hdfs-namenode' 
+    state: 'present'
+
+- name: create namenode directories
+  file: 
+    dest: '{{ item }}' 
+    owner: 'hdfs' 
+    group: 'hdfs' 
+    state: 'directory'
+  with_items: "{{ dfs_namenode_name_dir }}"
+
+
+- block:
+  - name: install zkfc package
+    apt:  
+      name: 'hadoop-hdfs-zkfc'
+      state: 'present'
+
+  - name: initialize zookeeper
+    shell: hdfs zkfc -formatZK -force && touch {{ dfs_namenode_name_dir }}/.zkFormatted
+    args:
+      creates: '{{ dfs_namenode_name_dir }}/.zkFormatted'
+    run_once: true
+    become: True
+    become_user: 'hdfs'
+
+  - name: start zkfc
+    service: 
+      name: 'hadoop-hdfs-zkfc' 
+      state: 'started' 
+      enabled: True
+  
+  when:  groups['namenodes']|count > 1
+
+- block:
+  - name: format primary namenode
+    shell: >
+        hdfs namenode -format -force 
+    args:
+        creates: '{{ dfs_namenode_name_dir }}/current/VERSION'
+    become: True
+    become_user: 'hdfs'
+
+  - name: start primary namenode
+    service: name=hadoop-hdfs-namenode state=started enabled=yes
+  
+  when: ansible_hostname == groups['namenodes'][0]
+
+- block:
+  - name: init secondary instance
+    shell: >
+       hdfs namenode -bootstrapStandby && touch {{ dfs_namenode_name_dir }}/.bootstrapped
+    args:
+      creates: '{{ dfs_namenode_name_dir }}/.bootstrapped'
+    become: True
+    become_user: 'hdfs'
+
+  - name: start secondary namenode
+    service: name=hadoop-hdfs-namenode state=started enabled=yes
+  
+  when: ansible_hostname != groups['namenodes'][0]
+
+

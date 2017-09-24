@@ -1,0 +1,8 @@
+---
+
+
+- name: check hostname via uname command
+  command: uname -a
+  register: check_hostname_uname
+  failed_when: inventory_hostname not in check_hostname_uname.stdout
+  changed_when: False

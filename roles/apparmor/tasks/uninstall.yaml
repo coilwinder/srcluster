@@ -1,0 +1,7 @@
+---
+
+
+- name: uninstall apparmor
+  apt:
+    name: 'apparmor'
+    state: 'absent'

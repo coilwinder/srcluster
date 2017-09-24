@@ -1,0 +1,12 @@
+---
+
+
+- name: check journal node running
+  command: jps
+  register: check_journalnode_running
+  until: check_journalnode_running.stdout.find( 'JournalNode' ) != -1
+  retries: 6
+  delay: 10
+  changed_when: False
+
+

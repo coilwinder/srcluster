@@ -1,0 +1,7 @@
+---
+
+# Generate /etc/hosts from template
+- include: make-hosts-file.yaml
+
+# Check via ping host names resolving
+- include: check-hosts-file.yaml

@@ -1,0 +1,19 @@
+---
+
+
+- name: check zookeeper running
+  command: jps
+  register: check_zookeeper_running
+  until: check_zookeeper_running.stdout.find( 'QuorumPeerMain' ) != -1
+  retries: 6
+  delay: 10
+  changed_when: False
+
+- name: check zookeeper status
+  shell: echo stat | nc localhost 2181
+  register: check_zookeeper_status
+  until: check_zookeeper_status.stdout.find( 'Zookeeper version:' ) != -1
+  retries: 6
+  delay: 10
+  changed_when: False
+

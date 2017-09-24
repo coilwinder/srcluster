@@ -1,0 +1,8 @@
+---
+
+
+# completely disabling of apparmor
+- include: disable.yaml
+
+# uninstall apparmor package
+- include: uninstall.yaml

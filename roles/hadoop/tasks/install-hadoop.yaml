@@ -1,0 +1,56 @@
+---
+
+
+- name: install hadoop packages
+  apt:
+    name: 'hadoop'
+    state: 'present'
+
+- name: create configuration directory
+  file: 
+    path: '{{ hadoop_etc_directory }}/hadoop' 
+    state: 'directory'
+
+- name: setup hadoop alternatives link
+  alternatives: 
+    name: 'hadoop-conf' 
+    link: '/etc/hadoop/conf' 
+    path: '{{ hadoop_etc_directory }}/hadoop'
+
+- name: install template configurations
+  template: 
+    src: '{{ item }}.j2' 
+    dest: '{{ hadoop_etc_directory }}/hadoop/{{ item }}'
+  with_items:
+    - 'core-site.xml'
+    - 'hdfs-site.xml'
+    - 'yarn-site.xml'
+    - 'hadoop-env.sh'
+    - 'yarn-env.sh'
+  register: hadoop_install_templates_result
+
+- name: install files configurations
+  copy: 
+    src: '{{ item }}' 
+    dest: '{{ hadoop_etc_directory }}/hadoop/{{ item }}'
+  with_items:
+    - 'capacity-scheduler.xml'
+    - 'configuration.xsl'
+    - 'container-executor.cfg'
+    - 'dfs.exclude'
+    - 'hadoop-metrics.properties'
+    - 'hadoop-metrics2.properties'
+    - 'hadoop-policy.xml'
+    - 'log4j.properties'
+  register: hadoop_install_files_result
+
+- name: create log folders
+  file: 
+    path: '{{ hadoop_log_directory }}/{{ item }}' 
+    state: 'directory' 
+    owner: '{{ item }}' 
+    mode: 0755
+  with_items:
+    - 'hdfs'
+    - 'yarn'
+    - 'mapred'

@@ -1,0 +1,44 @@
+---
+
+
+- name: install datanode packages
+  apt:  
+    name: '{{ item }}' 
+    state: 'present'
+  with_items:
+    - 'hadoop-hdfs-datanode'
+    - 'hadoop-yarn-nodemanager'
+
+- name: create datanode directories
+  file: 
+    dest: '{{ item }}' 
+    owner: 'hdfs' 
+    group: 'hdfs' 
+    state: 'directory'
+  with_items: "{{ dfs_datanode_data_dir }}"
+
+- name: create yarn local directories
+  file: 
+    dest: '{{ item }}' 
+    owner: 'yarn' 
+    group: 'hadoop' 
+    state: 'directory'
+  with_items: "{{ yarn_nodemanager_local_dirs.replace('file://','').split(',') }}"
+
+- name: create yarn log directories
+  file: 
+    dest: '{{ item }}' 
+    owner: 'yarn' 
+    group: 'hadoop' 
+    state: 'directory'
+  with_items: "{{ yarn_nodemanager_log_dirs.replace('file://','').split(',') }}"
+
+- name: start services
+  service: 
+    name: '{{ item }}' 
+    state: 'started' 
+    enabled: True
+  with_items:
+    - hadoop-hdfs-datanode
+    - hadoop-yarn-nodemanager
+

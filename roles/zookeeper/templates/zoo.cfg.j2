@@ -1,0 +1,27 @@
+maxClientCnxns=50
+
+# number of milliseconds of each tick
+tickTime=2000
+
+# number of ticks that the initial synchronization phase can take
+initLimit=10
+
+# number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit=5
+
+# directory where the snapshot is stored.
+dataDir={{ zookeeper_data_directory }}
+
+# port at which the clients will connect
+clientPort=2181
+
+# directory where the transaction logs are stored.
+dataLogDir={{ zookeeper_data_directory }}
+
+# Only for HA installation
+{% if groups['zookeeper']|count > 1 %}
+{% for host in groups['zookeeper']|sort %}
+server.{{ loop.index }}={{ host }}:2888:3888
+{% endfor %}
+{% endif %}

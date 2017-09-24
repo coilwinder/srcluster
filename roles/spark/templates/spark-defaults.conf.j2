@@ -1,0 +1,24 @@
+# Default system properties included when running spark-submit.
+# This is useful for setting default environmental settings.
+
+spark.eventLog.enabled           true
+
+{% if groups['namenodes']|count > 1 %}
+spark.eventLog.dir               hdfs://{{ hadoop_cluster_name }}{{ spark_history_server_dir }}
+{% else %}
+spark.eventLog.dir               hdfs://{{ groups['namenodes'][0] }}:8020{{ spark_history_server_dir }}
+{% endif %}
+
+{% if spark_dynamic_allocation_enabled %}
+spark.dynamicAllocation.enabled = true
+{% endif %}
+
+{% if spark_shuffle_service_enabled %}
+spark.shuffle.service.enabled = true
+{% endif %}
+
+{% if spark_dynamic_allocation_enabled %}
+spark.dynamicAllocation.initialExecutors = {{ spark_dynamic_allocation_initial_executors }}
+spark.dynamicAllocation.minExecutors = {{ spark_dynamic_allocation_min_executors }}
+spark.dynamicAllocation.maxExecutors = {{ spark_dynamic_allocation_max_executors }}
+{% endif %}

@@ -1,0 +1,7 @@
+---
+
+# install oracle java 8
+- include: install.yaml
+
+# check if java is working
+- include: check.yaml

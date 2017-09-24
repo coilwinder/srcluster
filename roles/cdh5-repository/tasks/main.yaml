@@ -1,0 +1,5 @@
+---
+
+
+# install cloudera repository
+- include: install.yaml

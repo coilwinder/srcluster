@@ -1,0 +1,65 @@
+---
+
+
+- name: install zookeeper-server
+  apt: 
+    name: 'zookeeper-server' 
+    state: 'present'
+
+- name: create zookeeper configuration directory
+  file: 
+    path: '{{ hadoop_etc_directory }}/zookeeper'
+    state: 'directory'
+
+- name: setup alternatives link
+  alternatives: 
+    name: 'zookeeper-conf' 
+    link: '/etc/zookeeper/conf'
+    path: '{{ hadoop_etc_directory }}/zookeeper'
+
+- name: install zookeeper configuration file {{ hadoop_etc_directory }}/zookeeper/zoo.cfg
+  template:
+    src: 'zoo.cfg.j2'
+    dest: '{{ hadoop_etc_directory }}/zookeeper/zoo.cfg'
+
+- name: install additional configuration files
+  copy: 
+    src: '{{ item }}' 
+    dest: '{{ hadoop_etc_directory }}/zookeeper/{{ item }}'
+  with_items:
+    - configuration.xsl
+    - log4j.properties
+
+- name: create data directory
+  file: 
+    path: '{{ zookeeper_data_directory }}' 
+    state: 'directory' 
+    owner: 'zookeeper' 
+    group: 'zookeeper'
+
+# init zookeeper in single node configuration
+- name: init zookeeper-server single-node
+  command: service zookeeper-server init
+  args:
+    creates: '{{ zookeeper_data_directory }}/version-2'
+  when: groups['zookeeper']|count == 1
+
+# init zookeeper-server in multi-node configuration
+- block:
+    - set_fact:
+        # add 1 to index because servers are counted from 1  
+        myid: '{{ groups.zookeeper.index(inventory_hostname) + 1 }}'
+
+    - name: init zookeeper-server multi-node
+      command: service zookeeper-server init --myid={{ myid }} 
+      args:
+        creates: '{{ zookeeper_data_directory }}/myid'
+  
+  when: groups['zookeeper']|count > 1
+
+- name: start and enable zookeeper
+  service: 
+    name: 'zookeeper-server' 
+    state: 'started' 
+    enabled: True
+

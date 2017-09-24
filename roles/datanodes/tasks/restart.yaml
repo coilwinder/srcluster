@@ -1,0 +1,18 @@
+---
+
+
+# restart services  when configuration changed
+# configuration created and variables defined in 'hadoop' role
+- block:
+  - name: restart hadoop-hdfs-datanode if configuration changed
+    service:
+      name: 'hadoop-hdfs-datanode'
+      state: 'restarted'
+
+  - name: restart hadoop-yarn-nodemanager if configuration changed
+    service:
+      name: 'hadoop-yarn-nodemanager'
+      state: 'restarted'
+
+  when: hadoop_install_templates_result.changed or hadoop_install_files_result
+

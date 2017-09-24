@@ -1,0 +1,41 @@
+---
+
+
+- name: install resource manager package
+  apt:  
+    name: 'hadoop-yarn-resourcemanager'
+    state: 'present'
+
+- name: install history server package
+  apt:  
+    name: 'hadoop-mapreduce-historyserver'
+    state: 'present'
+  when: ansible_hostname == groups['resourcemanagers'][0]
+
+- name: configure hdfs directories
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - '-mkdir -p /tmp'
+    - '-chmod 1777 /tmp'
+    - '-mkdir -p /user/history'
+    - '-chmod 1777 /user/history'
+    - '-chown mapred:hadoop /user/history'
+    - '-mkdir -p /var/log/hadoop-yarn/apps'
+    - '-chown yarn:mapred /var/log/hadoop-yarn'
+    - '-chown yarn:hadoop /var/log/hadoop-yarn/apps'
+    - '-chmod 1777 /var/log/hadoop-yarn/apps'
+  run_once: true
+
+- name: start and enable hadoop-yarn-resourcemanager service
+  service: 
+    name: 'hadoop-yarn-resourcemanager'
+    state: 'started' 
+    enabled: True
+
+- name: start and enable hadoop-mapreduce-historyserver service
+  service: 
+    name: 'hadoop-mapreduce-historyserver' 
+    state: 'started' 
+    enabled: True
+  when: ansible_hostname == groups['resourcemanagers'][0]
+

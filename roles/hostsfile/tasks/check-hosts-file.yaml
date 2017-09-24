@@ -1,0 +1,11 @@
+---
+
+
+- name: check /etc/hosts settings 
+  command: ping -c 1  {{ item }}
+  register: check_hosts
+  failed_when: hostvars[item]['ansible_default_ipv4']['address'] not in check_hosts.stdout or
+               check_hosts.rc != 0
+  changed_when: False
+  with_items: '{{ groups["all"] }}'
+

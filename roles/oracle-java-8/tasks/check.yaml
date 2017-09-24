@@ -1,0 +1,8 @@
+---
+
+
+- name: check that java works
+  command: java -version
+  register: check_java
+  failed_when: check_java.rc != 0
+  changed_when: False

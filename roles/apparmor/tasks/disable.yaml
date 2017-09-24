@@ -1,0 +1,18 @@
+---
+
+
+- name: disable apparmor
+  service:
+    name: 'apparmor'
+    state: 'stopped'
+    enabled: False
+
+- name: check apparmor status
+  command: apparmor_status
+  register: check_apparmor
+  changed_when: False
+  failed_when: False
+
+- name: unload apparmor profiles
+  command: service apparmor teardown
+  when: check_apparmor.rc == 0

@@ -1,0 +1,12 @@
+---
+
+
+# install hadoop-hdfs-namenode  services
+- import_tasks: 'install.yaml'
+
+# restart services if configuration changed
+- import_tasks: 'restart.yaml'
+
+# configure ssh keys for namenode failover
+#- include: 'ssh.yaml'
+

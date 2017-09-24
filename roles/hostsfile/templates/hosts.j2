@@ -1,0 +1,6 @@
+127.0.0.1       localhost
+{{ ansible_default_ipv4['address'] }}  {{ ansible_hostname }}
+
+{% for host in groups['all']|sort %}
+{{ hostvars[host]['ansible_default_ipv4']['address'] }}  {{ hostvars[host]['ansible_hostname'] }}
+{% endfor %}

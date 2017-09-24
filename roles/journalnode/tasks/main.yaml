@@ -1,0 +1,11 @@
+---
+
+
+# install hadoop-hdfs-journalnode service
+- import_tasks: install.yaml
+
+# restart hadoop-hdfs-journalnode when configuration changed
+- import_tasks: restart.yaml
+
+# check hadoop-hdfs-journalnode status
+- import_tasks: check.yaml

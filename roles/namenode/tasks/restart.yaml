@@ -1,0 +1,10 @@
+---
+
+# restart services when configuration changed
+# configuration created and variables defined in 'hadoop' role
+- name: restart hadoop-hdfs-namenode if configuration changed
+  service:
+    name: 'hadoop-hdfs-namenode'
+    state: 'restarted'
+  when: hadoop_install_templates_result.changed or hadoop_install_files_result
+

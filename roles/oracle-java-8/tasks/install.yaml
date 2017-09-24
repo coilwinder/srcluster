@@ -1,0 +1,24 @@
+---
+
+- name: add java repository
+  apt_repository:
+    repo: 'ppa:webupd8team/java'
+
+- name: accept oracle license
+  debconf: 
+    name: 'oracle-java8-installer' 
+    question: 'shared/accepted-oracle-license-v1-1'
+    value: 'true' 
+    vtype: 'select'
+
+- name: install java
+  apt:
+    name: 'oracle-java8-installer={{ oracle_java8_version }}'
+    state: 'present'
+    update_cache: True
+
+- name: set oracle java as default
+  apt:
+    name: 'oracle-java8-set-default={{ oracle_java8_version }}'
+    state: 'present'
+

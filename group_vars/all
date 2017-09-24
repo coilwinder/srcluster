@@ -1,0 +1,96 @@
+---
+
+
+####################### main settings #################################################
+# local working directory
+working_directory:      '{{ playbook_dir }}/workdir_{{ inventory_dir | basename }}'
+
+# oracle java version for oracle-java-8 role
+# used in oracle-java8-role in apt module
+# apt-get install oracle-java8-installer=8u144-1~webupd8~0
+oracle_java8_version:   '8u144-1~webupd8~0'
+
+# cloudera distribution version
+# used in repository string in cdh5-repository role
+# deb [arch=amd64] http://archive.cloudera.com/cdh5/ubuntu/xenial/amd64/cdh xenial-cdh5.12 contrib
+cdh_version:            'cdh5.12'
+
+hadoop_cluster_name:    'sr-cluster'
+hadoop_etc_directory:   '/etc/cluster'
+hadoop_log_directory:   '/var/log'
+
+
+####################### zoo.cfg #######################################################
+# zookeeper data directory
+# dataLogDir
+zookeeper_data_directory: '/var/lib/zookeeper'
+
+
+
+####################### hdfs-site.xml #################################################
+# name nodes directory
+# dfs.namenode.name.dir
+dfs_namenode_name_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/name'
+
+# datanodes directory
+# dfs.datanode.data.dir
+dfs_datanode_data_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
+
+# journal nodes directory
+# dfs.journalnode.edits.dir
+dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
+
+# default replication factor
+# dfs.replication
+dfs_replication: 3
+
+# umask for hdfs, the valued MUST be quoted
+# fs.permissions.umask-mode
+fs_permissions_umask_mode: '022'
+
+
+
+####################### yarn-site.xml #################################################
+# yarn directories.
+# yarn.nodemanager.local-dirs
+yarn_nodemanager_local_dirs: '/var/lib/hadoop-yarn/cache/${user.name}/nm-local-dir'
+
+# yarn.nodemanager.log-dirs
+yarn_nodemanager_log_dirs: '/var/log/hadoop-yarn/containers'
+
+# yarn cpu-vcores
+# set equal to the number of physical processors on node
+# yarn.nodemanager.resource.cpu-vcores
+yarn_nodemanager_resource_cpu_vcores: 2
+
+# The minimum allocation for every container request at the RM, 
+# in terms of virtual CPU cores. Requests lower than this won't take effect, 
+# and the specified value will get allocated the minimum
+# yarn.scheduler.minimum-allocation-vcores
+yarn_scheduler_minimum_allocation_vcores: 2
+
+# yarn memory settings in Mb
+# yarn.nodemanager.resource.memory-mb
+yarn_nodemanager_resource_memory_mb: 2048
+
+#yarn.scheduler.minimum-allocation-mb
+yarn_scheduler_minimum_allocation_mb: 2048
+
+
+
+####################### spark-defaults.conf ###########################################
+# spark.dynamicAllocation.enabled
+spark_dynamic_allocation_enabled: False
+
+# spark.shuffle.service.enabled
+spark_shuffle_service_enabled: False
+
+# spark.dynamicAllocation.initialExecutors
+spark_dynamic_allocation_initial_executors: 3
+
+# spark.dynamicAllocation.minExecutors
+spark_dynamic_allocation_min_executors: 3
+
+# spark.dynamicAllocation.maxExecutors
+spark_dynamic_allocation_max_executors: 30
+

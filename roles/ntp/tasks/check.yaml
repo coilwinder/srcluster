@@ -1,0 +1,10 @@
+---
+
+
+- name: check for ntp sync
+  command: /usr/bin/ntpstat
+  register: check_ntp
+  until: '"synchronised to NTP server" in check_ntp.stdout'
+  retries: 12
+  delay: 10
+  changed_when: False

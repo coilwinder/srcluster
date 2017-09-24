@@ -1,0 +1,33 @@
+---
+
+
+- name: generate hdfs ssh key
+  local_action: 
+    module: shell
+    args: > 
+        ssh-keygen -q -N "" -t rsa -b 2048  -f {{ working_directory }}/hdfs_key \
+            && chmod 644 {{ working_directory }}/hdfs_key
+            creates='{{ working_directory }}/hdfs_key'
+  become: False
+  run_once: True
+
+- name: get hosts public keys
+  local_action:
+    module: shell
+    args: >
+        ssh-keyscan {{ item }} >> {{ working_directory }}/ssh_host_key_{{ item }}
+            creates={{ working_directory }}/ssh_host_key_{{ item }}
+  become: False
+  run_once: True
+  with_items:
+    - '{{ groups["all"] }}'
+
+#- name: generate known_hosts
+#  local_action: 
+#    module: known_hosts
+#    path: '{{ working_directory }}/hdfs_known_hosts'
+#    key: '{{ lookup("file", "{{ working_directory }}/ssh_host_key_{{ item }}") }}'
+#    name: '{{ item }}'
+#  with_items:
+#    - '{{ groups["all"] }}'
+

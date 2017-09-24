@@ -1,0 +1,7 @@
+---
+
+
+# install ntpd daemon
+- include: install.yaml
+# check ntpd is working
+- include: check.yaml

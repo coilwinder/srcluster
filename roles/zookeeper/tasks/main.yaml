@@ -1,0 +1,7 @@
+---
+
+# Install and configure zookeeper
+- include: install.yaml
+
+# Check zookeeper status after install
+- include: check.yaml

@@ -1,0 +1,8 @@
+---
+
+
+# install packages and start services
+- import_tasks: 'install.yaml'
+
+# restart yarn services if configuration changed
+- import_tasks: 'restart.yaml'

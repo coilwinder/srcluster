@@ -1,0 +1,120 @@
+---
+
+
+- name: install python
+  hosts: all
+  gather_facts: False
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt-get update -qq && apt-get install python-minimal -qq)
+      changed_when: False
+    - setup: # aka gather_facts
+
+
+#- name: setup local environment
+#  tags:
+#    - common
+#  hosts: 
+#    - all
+#  tasks:
+#    - name: create working directory
+#      local_action: 
+#        module: 'file'
+#        dest: '{{ working_directory }}'
+#        state: 'directory'
+#      run_once: True
+
+
+- name: prepare hosts for cloudera hadoop cluster installation
+  tags: 
+    - common
+  hosts: 
+    - all
+  become: True
+  roles:
+    # disable and remove apparmor
+    - apparmor
+    # disable ipv6 support
+    - ipv6
+    # set hostname as in ansible inventory
+    - hostname
+    # configure /etc/hosts with ansible inventory hostnames
+    - hostsfile
+    # install and start ntp
+    - ntp
+    # install oracle java8
+    - oracle-java-8
+    # install cdh5 repository
+    - cdh5-repository
+
+
+- name: install zookeeper cluster 
+  tags:
+    - zookeeper
+  hosts: 
+    - zookeeper
+  become: True
+  roles:
+    # Create zookeeper cluster
+    - zookeeper
+
+
+- name: install hadoop configuration
+  tags:
+    - hadoop
+  hosts: 
+    - all
+  become: True
+  roles:
+    # Install main configuration files for all components
+    - hadoop
+
+
+- name: install journalnodes
+  tags:
+    - journalnodes
+  hosts:
+    - journalnodes
+  become: True
+  roles:
+    - journalnode
+
+
+- name: install primary namenode
+  tags:
+    - namenodes
+  hosts:
+    - namenodes
+  become: True
+  roles:
+    - namenode
+
+
+- name: install datanodes
+  tags:
+    - datanodes
+  hosts:
+    - datanodes
+  become: True
+  roles:
+    - datanodes
+
+- name: install resourcemanager
+  tags:
+    - resourcemanagers
+  hosts:
+    - resourcemanagers
+  become: True
+  roles:
+    - resourcemanager
+
+- name: install spark
+  tags:
+    - spark
+  hosts:
+    - spark
+  become: True
+  roles:
+    - spark
+
+

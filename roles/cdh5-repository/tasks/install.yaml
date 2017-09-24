@@ -1,0 +1,21 @@
+---
+
+
+- name: add cdh5 repository signing key
+  apt_key:
+    url: 'http://archive.cloudera.com/cdh5/ubuntu/xenial/amd64/cdh/archive.key'
+    state: 'present'
+
+- name: add cdh5 repository
+  apt_repository:
+    repo: >
+        deb [arch=amd64] 
+        http://archive.cloudera.com/cdh5/ubuntu/xenial/amd64/cdh 
+        xenial-{{ cdh_version }} contrib
+    state: 'present'
+    update_cache: True
+
+- name: pin priority to cloudera repository
+  copy:
+    src: 'cloudera.pref'
+    dest: '/etc/apt/preferences.d/cloudera.pref'
