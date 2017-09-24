@@ -7,6 +7,9 @@ SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_S
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+$SSH_CMD "cd /home/ansible/work/semrush/srcluster; ./provisioner.sh inventories/staging/"
+exit 0
+
 if $SSH_CMD "test -f ${LOCK_FILE}"
 then
     echo "Error: lock file exists"
