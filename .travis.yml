@@ -2,7 +2,7 @@ language: python
 install: true
 sudo: false
 script:
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ansible@46.101.218.33 'hostname; date; pwd; echo Wait 15; sleep 15'
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ansible@46.101.218.33 'hostname; date; pwd; echo Wait 5; sleep 5'
     - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ansible@46.101.218.33 'cd work/semrush/srcluster/; date'
 before_install:
     - openssl aes-256-cbc -K $encrypted_2c430460807a_key -iv $encrypted_2c430460807a_iv 
