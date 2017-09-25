@@ -35,7 +35,8 @@ $SSH_CMD "mkdir -p ${WORK_DIR}; rm -rf ${WORK_DIR}/*" \
     || exit_error "ERROR: can't prepare workdir"
 
 # Send repozitory to deploy server
-tar --exclude-vcs czpf - . | $SSH_CMD "tar -C ${WORK_DIR} xzpf -" \
+tar --exclude-vcs --create --gzip --preserve --file - . \
+    | $SSH_CMD "tar --directory ${WORK_DIR} --extract --gzip --preserve --file -" \
     || exit_error "ERROR: can't copy repository"
 
 # Run provisioner.sh script
