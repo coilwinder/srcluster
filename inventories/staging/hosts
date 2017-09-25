@@ -22,4 +22,6 @@ sr-test-2
 sr-test-3
 
 [spark:children]
-all
+namenodes
+resourcemanagers
+datanodes

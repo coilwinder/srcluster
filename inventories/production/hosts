@@ -22,4 +22,6 @@ sr-2
 sr-3
 
 [spark:children]
-all
+namenodes
+resourcemanagers
+datanodes
