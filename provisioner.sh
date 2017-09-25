@@ -65,7 +65,7 @@ if [[ ! -d "${INVENTORY}" ]]; then
 fi
 
 # check STATE parameter
-if [[ "${STATE}" == "present" || "${STATE}" == "deleted" ]]; then
+if [[ "${STATE}" != "present" && "${STATE}" != "deleted" ]]; then
     bail_out "second parameter must be [present|deleted]"
 fi
 
