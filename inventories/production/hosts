@@ -15,7 +15,6 @@ sr-2
 [datanodes]
 sr-4
 sr-5
-sr-6
 
 [resourcemanagers]
 sr-2

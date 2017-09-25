@@ -47,6 +47,9 @@ $SSH_CMD "cd ${WORK_DIR} && ./provisioner.sh inventories/production" \
 $SSH_CMD "cd ${WORK_DIR} && ansible-playbook -i inventories/production site.yaml" \
     || exit_error "ERROR on ansible step"
 
+# Show ip addresses
+$SSH_CMD "cd ${WORK_DIR} && tail -vn +1 inventories/production/host_vars/*"
+
 # Remove lock file
 $SSH_CMD "rm ${LOCK_FILE}"
 
