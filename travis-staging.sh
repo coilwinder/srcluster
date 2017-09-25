@@ -36,5 +36,5 @@ $SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/"  || exit_error 
 $SSH_CMD "cd ${WORK_DIR}; ansible-playbook -i inventories/staging site.yaml" || exit_error "ERROR on staging.ansible step"
 $SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/ deleted"
 
-SSH_CMD "rm ${LOCK_FILE}"
+$SSH_CMD "rm ${LOCK_FILE}"
 

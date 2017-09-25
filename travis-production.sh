@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash
 
 LOCK_FILE='/home/ansible/.sr_lock'
 WORK_DIR='/home/ansible/srwork'
