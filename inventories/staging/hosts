@@ -13,18 +13,13 @@ sr-test-1
 sr-test-2
 
 [datanodes]
-sr-test-4
-sr-test-5
-sr-test-6
+sr-test-1
+sr-test-2
+sr-test-3
 
 [resourcemanagers]
 sr-test-2
 sr-test-3
 
-[spark]
-sr-test-1
-sr-test-2
-sr-test-3
-sr-test-4
-sr-test-5
-sr-test-6
+[spark:children]
+all

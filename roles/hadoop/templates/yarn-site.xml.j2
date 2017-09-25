@@ -175,7 +175,7 @@
 
   <property>
     <name>yarn.resourcemanager.webapp.address.{{ item }}</name>
-    <value>{{ hostvars[item]['ansible_default_ipv4']['address'] }}:8088</value>
+    <value>{{ item }}:8088</value>
   </property>
 
   <property>

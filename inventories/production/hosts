@@ -15,16 +15,11 @@ sr-2
 [datanodes]
 sr-4
 sr-5
-sr-6
+
 
 [resourcemanagers]
 sr-2
 sr-3
 
-[spark]
-sr-1
-sr-2
-sr-3
-sr-4
-sr-5
-sr-6
+[spark:children]
+all
