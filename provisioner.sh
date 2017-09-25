@@ -4,18 +4,19 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-function bail_out {
-  echo -e "\033[0;31m"
-
-  if [[ -n "${1}" ]]; then
-  	echo "${1}"
-  	echo -e "\033[0m"
-  fi
+function bail_out() {
+  
+  # write error message
+  echo -e "\033[0;31m"			# set red color
+  [[ -n "${1}" ]] && echo "${1}"	# write error message
+  echo -e "\033[0m"			# reset text
   
   echo -e "Usage: $0 <inventory_directory> [present|deleted]\n"
   echo -e "\tinventory_directory: the directory containing the inventory goal (compulsory)"
   echo -e "\tpresent: the droplet will be created if it doesn't exist (default)"
   echo -e "\tdeleted: the droplet will be destroyed if it exists\n"
+  echo -e ""
+  echo -e "DO_API_TOKEN environment variable should be setted"
 
   exit 1
 }
@@ -58,16 +59,25 @@ INVENTORY="${INVENTORY%/}"
 # Set state default value to present
 STATE=${2:-"present"}
 
-# Check script parameters
-[[ -d "${INVENTORY}" ]] \
-  || bail_out "<inventory_directory> does not exist, is not a directory, or is not set"
+# check INVENTORY parameter
+if [[ ! -d "${INVENTORY}" ]]; then
+    bail_out "<inventory_directory> does not exist, is not a directory, or is not set"
+fi
 
+# check STATE parameter
+if [[ "${STATE}" == "present" || "${STATE}" == "deleted" ]]; then
+    bail_out "second parameter must be [present|deleted]"
+fi
 
-[[ "${STATE}" == "present" || "${STATE}" == "deleted" ]] \
-  || bail_out "second parameter must be [present|deleted]"
+# check DO_API_TOKEN variable
+if [[ -z "${DO_API_TOKEN}" ]]; then
+    bail_out "DO_API_TOKEN variable should be setted"
+fi
 
 # Check for JSON processor
-which jq &>/dev/null || bail_out "Unable to find required binary 'jq'."
+if [[ ! -x "$(which jq 2>/dev/null)" ]]; then
+    bail_out "Unable to find required binary 'jq'"
+fi
 
 # digital_ocean module command to use
 # name, size, region, image and key will be filled automatically
@@ -126,6 +136,9 @@ done
 
 # Now do it again to fill up complementary inventory
 if [[ "${STATE}" == "present" ]]; then
+  # Check and create host_vars directory in inventory
+  [[ -d "${INVENTORY}/host_vars" ]] || mkdir "${INVENTORY}/host_vars"
+
   for host in ${HOSTS}; do
     echo "Checking droplet ${host}"
     

@@ -30,15 +30,15 @@ trap "exit_error 'ERROR: exit by signal'" ERR SIGINT SIGTERM
 $SSH_CMD "mkdir -p ${WORK_DIR}; rm -rf ${WORK_DIR}/*" || exit_error "ERROR can't prepare workdir"
 
 tar -czp --exclude-vcs --file - . | $SSH_CMD "tar xzp --file - -C ${WORK_DIR}" || exit_error "ERROR can't copy "
-$SSH_CMD ". .do_rc; cd ${WORK_DIR}; env; ls -la; echo "
+$SSH_CMD "cd ${WORK_DIR}; env; ls -la; echo "
 
-$SSH_CMD ". .do_rc; cd ${WORK_DIR}; ./provisioner.sh inventories/staging/"  || exit_error "ERROR on staging.provisioner step"
-$SSH_CMD ". .do_rc; cd ${WORK_DIR}; ansible-playbook -i inventories/staging site.yaml" || exit_error "ERROR on staging.ansible step"
-$SSH_CMD ". .do_rc; cd ${WORK_DIR}; ./provisioner.sh inventories/staging/ deleted"
+$SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/"  || exit_error "ERROR on staging.provisioner step"
+$SSH_CMD "cd ${WORK_DIR}; ansible-playbook -i inventories/staging site.yaml" || exit_error "ERROR on staging.ansible step"
+$SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/ deleted"
 
 echo "Try to run: cd ${WORK_DIR}; ./provisioner.sh inventories/production"
-$SSH_CMD ". .do_rc; cd ${WORK_DIR}; ./provisioner.sh inventories/production" || exit_error "ERROR on production.provisioner step"
-$SSH_CMD ". .do_rc; cd ${WORK_DIR}; ansible-playbook -i inventories/production site.yaml" || exit_error "ERROR on production.ansible step"
+$SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/production" || exit_error "ERROR on production.provisioner step"
+$SSH_CMD "cd ${WORK_DIR}; ansible-playbook -i inventories/production site.yaml" || exit_error "ERROR on production.ansible step"
 
 $SSH_CMD "rm ${LOCK_FILE}"
 
