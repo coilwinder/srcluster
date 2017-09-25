@@ -2,7 +2,8 @@ language: python
 install: true
 sudo: false
 script:
-    - bash run.sh
+    - bash travis-staging.sh
+    - bash travis-production.sh
 before_install:
     - openssl aes-256-cbc -K $encrypted_2c430460807a_key -iv $encrypted_2c430460807a_iv 
       -in srcluster.enc -out /tmp/travis_key -d
