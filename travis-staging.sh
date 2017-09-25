@@ -3,7 +3,7 @@
 LOCK_FILE='/home/ansible/.sr_lock'
 WORK_DIR='/home/ansible/srwork'
 SSH_STR='ansible@46.101.218.33'
-SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_STR}"
+SSH_CMD="ssh -q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${SSH_STR}"
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
@@ -19,7 +19,7 @@ $SSH_CMD "touch ${LOCK_FILE}" || exit_error "ERROR can't create lock file"
 function exit_error ()
 {
    MSG="$1"
-   $SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging/ deleted"
+   $SSH_CMD "cd ${WORK_DIR}; ./provisioner.sh inventories/staging deleted"
    echo "${MSG}"
    $SSH_CMD "rm ${LOCK_FILE}"
    exit 1
